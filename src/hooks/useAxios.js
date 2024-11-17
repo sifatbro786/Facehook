@@ -57,6 +57,7 @@ const useAxios = () => {
             api.interceptors.request.eject(requestIntercept);
             api.interceptors.response.eject(responseIntercept);
         };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [auth?.authToken]);
 
     return { api };

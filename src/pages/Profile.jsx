@@ -19,6 +19,7 @@ export default function Profile() {
                 const res = await api.get(
                     `${import.meta.env.VITE_SERVER_BASE_URL}/profile/${auth?.user?.id}`,
                 );
+
                 setUser(res?.data?.user);
                 setPosts(res?.data?.posts);
             } catch (err) {
@@ -30,7 +31,7 @@ export default function Profile() {
         };
 
         fetchProfile();
-    }, [api ,auth?.user?.id]);
+    }, [api, auth?.user?.id]);
 
     if (loading) return <div>fetching your profile data</div>;
     if (error) return <div>An error occured!</div>;
