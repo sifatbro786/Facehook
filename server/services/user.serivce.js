@@ -61,7 +61,7 @@ const register = (reqBody, db) => {
 
 const refreshToken = async (refreshToken, db) => {
   // check if refresh token valid
-  const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET_KEY);
+  const decoded = jwt.verify(refreshToken, 'somesecretekey');
 
   if (!decoded) {
     throw new Error("Invalid refresh token");

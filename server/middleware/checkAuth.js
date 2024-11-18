@@ -19,7 +19,7 @@ const checkAuth = (req, res, next) => {
     return res.status(401).json({ error: "Please Provide Valid Token" }); // Unauthorized
   }
 
-  jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+  jwt.verify(token, 'somesecretekey', (err, decoded) => {
     if (err) {
       return res.status(401).json({ error: "Invalid Token" }); // Forbidden
     }
