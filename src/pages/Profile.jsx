@@ -1,18 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import useAxios from "../hooks/useAxios";
 import { useAuth } from "../hooks/useAuth";
+import useProfile from "../hooks/useProfile";
+import { actions } from "../actions";
+import ProfileInfo from "../components/profile/ProfileInfo";
+import MyPosts from "../components/profile/MyPosts";
 
 export default function Profile() {
-    const [user, setUser] = useState(null);
-    const [posts, setPosts] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const { state, dispatch } = useProfile();
 
     const { api } = useAxios();
     const { auth } = useAuth();
 
     useEffect(() => {
-        setLoading(true);
+        dispatch({ type: actions.profile.DATA_FETCHING });
 
         const fetchProfile = async () => {
             try {
@@ -20,26 +21,26 @@ export default function Profile() {
                     `${import.meta.env.VITE_SERVER_BASE_URL}/profile/${auth?.user?.id}`,
                 );
 
-                setUser(res?.data?.user);
-                setPosts(res?.data?.posts);
+                if (res.status === 200) {
+                    dispatch({ type: actions.profile.DATA_FETCHED, data: res.data });
+                }
             } catch (err) {
                 console.log(err);
-                setError(err);
-            } finally {
-                setLoading(false);
+                dispatch({ type: actions.profile.DATA_FETCH_ERROR, error: err.message });
             }
         };
 
         fetchProfile();
-    }, [api, auth?.user?.id]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [auth?.user?.id]);
 
-    if (loading) return <div>fetching your profile data</div>;
-    if (error) return <div>An error occured!</div>;
+    if (state?.loading) return <div>fetching your profile data</div>;
+    if (state?.error) return <div>An error occured!</div>;
 
     return (
-        <div>
-            Welcome, {user?.firstName} {user?.lastName}
-            <p>You have {posts.length} posts.</p>
-        </div>
+        <>
+            <ProfileInfo />
+            <MyPosts />
+        </>
     );
 }
