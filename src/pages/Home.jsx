@@ -1,11 +1,12 @@
-import { useEffect, useReducer } from "react";
+import { useEffect } from "react";
 import { actions } from "../actions";
 import PostList from "../components/posts/PostList";
 import useAxios from "../hooks/useAxios";
-import { initialState, PostReducer } from "../reducers/PostReducer";
+import { usePost } from "../hooks/usePost";
+import NewPost from "../components/posts/NewPost";
 
 export default function Home() {
-    const [state, dispatch] = useReducer(PostReducer, initialState);
+    const { state, dispatch } = usePost();
     const { api } = useAxios();
 
     useEffect(() => {
@@ -30,7 +31,7 @@ export default function Home() {
         };
 
         fetchPost();
-    }, [api]);
+    }, [api, dispatch]);
 
     if (state?.loading) {
         return <div> We are working...</div>;
@@ -42,6 +43,7 @@ export default function Home() {
 
     return (
         <div>
+            <NewPost />
             <PostList posts={state?.posts} />
         </div>
     );
